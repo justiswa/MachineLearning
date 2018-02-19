@@ -1,0 +1,7 @@
+Tensorflow Instructions for Anaconda/Spyder
+1.)Get Gud
+2.)Open Anaconda Prompt from Windows
+3.)type "conda install -c https://conda.anaconda.org/jjhelmus tensorflow
+4.)Go into spyder Tools->Preferences->Python Interpreter
+		-Don't use default, change to "Use the following.." Python.exe
+5.)Open deep-ann.py in Spyder and run it. If it runs and throws a buncha numbers at you, we good.
