@@ -31,6 +31,10 @@ def sigmoid(z):
 
 
 def preprocess():
+    #Someone on piazza said to do this to fix error
+    n_valid = 500000
+    #end piazza tip
+    
     """ Input:
      Although this function doesn't have any input, you are required to load
      the MNIST data set from file 'mnist_all.mat'.
