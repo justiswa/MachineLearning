@@ -47,14 +47,13 @@ def preprocess():
      test_label: vector of label corresponding to each image in the testing
        set
 
-     Some suggestions for preprocessing step:
+     Things to do for preprocessing step:
      - remove features that have the same value for all data points
-     - divide the original data set to training, validation and testing set
            with corresponding labels
      - convert original data set from integer to double by using double()
            function
      - normalize the data to [0, 1]
-     - feature selection"""
+     - divide the original data set to training, validation and testing set"""
     
     # Preparing the data set
     with open('AI_quick_draw.pickle', 'rb') as open_ai_quick:
@@ -64,11 +63,12 @@ def preprocess():
         test_label = pickle.load(open_ai_quick)
 
     
-    #Pick a reasonable size for validation data
+    # remove features that have same value for all points in the training data
+    # convert data to double
+    # normalize data to [0,1]
     
-    
-    #Your code here
-    #replace the next two lines
+    # Split train_data and train_label into train_data, validation_data and train_label, validation_label
+    # replace the next two lines
     validation_data = np.array([])
     validation_label = np.array([])
 
