@@ -32,10 +32,10 @@ def sigmoid(z):
 
 def preprocess():
     #Someone on piazza said to do this to fix error
-    n_valid = 500000
+    n_valid = 5000
     #end piazza tip
     
-    """ Input:
+     """ Input:
      Although this function doesn't have any input, you are required to load
      the MNIST data set from file 'mnist_all.mat'.
 
@@ -53,31 +53,30 @@ def preprocess():
      test_label: vector of label corresponding to each image in the testing
        set
 
-     Some suggestions for preprocessing step:
+     Things to do for preprocessing step:
      - remove features that have the same value for all data points
-     - divide the original data set to training, validation and testing set
            with corresponding labels
      - convert original data set from integer to double by using double()
            function
      - normalize the data to [0, 1]
-     - feature selection"""
+     - divide the original data set to training, validation and testing set"""
     
     mat = loadmat('mnist_all.mat') #loads the MAT object as a Dictionary
-    train_data = np.concatenate((mat['train0'][n_valid:, :], mat['train1'][n_valid:, :],
-                                 mat['train2'][n_valid:, :], mat['train3'][n_valid:, :],
-                                 mat['train4'][n_valid:, :], mat['train5'][n_valid:, :],
-                                 mat['train6'][n_valid:, :], mat['train7'][n_valid:, :],
-                                 mat['train8'][n_valid:, :], mat['train9'][n_valid:, :]), 0)
-    train_label = np.concatenate((np.ones((mat['train0'][n_valid:, :].shape[0], 1), dtype='uint8'),
-                                  2 * np.ones((mat['train1'][n_valid:, :].shape[0], 1), dtype='uint8'),
-                                  3 * np.ones((mat['train2'][n_valid:, :].shape[0], 1), dtype='uint8'),
-                                  4 * np.ones((mat['train3'][n_valid:, :].shape[0], 1), dtype='uint8'),
-                                  5 * np.ones((mat['train4'][n_valid:, :].shape[0], 1), dtype='uint8'),
-                                  6 * np.ones((mat['train5'][n_valid:, :].shape[0], 1), dtype='uint8'),
-                                  7 * np.ones((mat['train6'][n_valid:, :].shape[0], 1), dtype='uint8'),
-                                  8 * np.ones((mat['train7'][n_valid:, :].shape[0], 1), dtype='uint8'),
-                                  9 * np.ones((mat['train8'][n_valid:, :].shape[0], 1), dtype='uint8'),
-                                  10 * np.ones((mat['train9'][n_valid:, :].shape[0], 1), dtype='uint8')), 0)
+     train_data = np.concatenate((mat['train0'], mat['train1'],
+                                 mat['train2'], mat['train3'],
+                                 mat['train4'], mat['train5'],
+                                 mat['train6'], mat['train7'],
+                                 mat['train8'], mat['train9']), 0)
+    train_label = np.concatenate((np.ones((mat['train0'].shape[0], 1), dtype='uint8'),
+                                  2 * np.ones((mat['train1'].shape[0], 1), dtype='uint8'),
+                                  3 * np.ones((mat['train2'].shape[0], 1), dtype='uint8'),
+                                  4 * np.ones((mat['train3'].shape[0], 1), dtype='uint8'),
+                                  5 * np.ones((mat['train4'].shape[0], 1), dtype='uint8'),
+                                  6 * np.ones((mat['train5'].shape[0], 1), dtype='uint8'),
+                                  7 * np.ones((mat['train6'].shape[0], 1), dtype='uint8'),
+                                  8 * np.ones((mat['train7'].shape[0], 1), dtype='uint8'),
+                                  9 * np.ones((mat['train8'].shape[0], 1), dtype='uint8'),
+                                  10 * np.ones((mat['train9'].shape[0], 1), dtype='uint8')), 0)
     test_label = np.concatenate((np.ones((mat['test0'].shape[0], 1), dtype='uint8'),
                                  2 * np.ones((mat['test1'].shape[0], 1), dtype='uint8'),
                                  3 * np.ones((mat['test2'].shape[0], 1), dtype='uint8'),
@@ -93,18 +92,17 @@ def preprocess():
                                 mat['test4'], mat['test5'],
                                 mat['test6'], mat['test7'],
                                 mat['test8'], mat['test9']), 0)
+   # remove features that have same value for all points in the training data
+    # convert data to double
+    # normalize data to [0,1]
 
-    
-    #Pick a reasonable size for validation data
-    
-    
-    #Your code here
-    #replace the next two lines
+    # Split train_data and train_label into train_data, validation_data and train_label, validation_label
+    # replace the next two lines
     validation_data = np.array([])
     validation_label = np.array([])
 
 
-    print ("preprocess done!")
+    print("preprocess done!")
 
     return train_data, train_label, validation_data, validation_label, test_data, test_label
 
