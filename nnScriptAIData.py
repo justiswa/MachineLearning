@@ -5,16 +5,16 @@ from math import sqrt
 
 
 def initializeWeights(n_in, n_out):
-    """
-    # initializeWeights return the random weights for Neural Network given the
-    # number of node in the input layer and output layer
+		"""
+		# initializeWeights return the random weights for Neural Network given the
+		# number of node in the input layer and output layer
 
-    # Input:
-    # n_in: number of nodes of the input layer
-    # n_out: number of nodes of the output layer
-       
-    # Output: 
-    # W: matrix of random initial weights with size (n_out x (n_in + 1))"""
+		# Input:
+		# n_in: number of nodes of the input layer
+		# n_out: number of nodes of the output layer
+		   
+		# Output: 
+		# W: matrix of random initial weights with size (n_out x (n_in + 1))"""
 
     epsilon = sqrt(6) / sqrt(n_in + n_out + 1)
     W = (np.random.rand(n_out, n_in + 1) * 2 * epsilon) - epsilon
@@ -22,10 +22,12 @@ def initializeWeights(n_in, n_out):
 
 
 def sigmoid(z):
-    """# Notice that z can be a scalar, a vector or a matrix
+"""# Notice that z can be a scalar, a vector or a matrix
     # return the sigmoid of input z"""
-
-    return  # your code here
+    #Plugin the sigmoid function from lecture
+    #1/(1+e^(-net) where net is input z
+    #np.exp is python e operator
+    return  1/(1 + np.exp(-1 * z))
 
 
 def preprocess():
@@ -47,13 +49,14 @@ def preprocess():
      test_label: vector of label corresponding to each image in the testing
        set
 
-     Things to do for preprocessing step:
+     Some suggestions for preprocessing step:
      - remove features that have the same value for all data points
+     - divide the original data set to training, validation and testing set
            with corresponding labels
      - convert original data set from integer to double by using double()
            function
      - normalize the data to [0, 1]
-     - divide the original data set to training, validation and testing set"""
+     - feature selection"""
     
     # Preparing the data set
     with open('AI_quick_draw.pickle', 'rb') as open_ai_quick:
@@ -63,17 +66,16 @@ def preprocess():
         test_label = pickle.load(open_ai_quick)
 
     
-    # remove features that have same value for all points in the training data
-    # convert data to double
-    # normalize data to [0,1]
+    #Pick a reasonable size for validation data
     
-    # Split train_data and train_label into train_data, validation_data and train_label, validation_label
-    # replace the next two lines
+    
+    #Your code here
+    #replace the next two lines
     validation_data = np.array([])
     validation_label = np.array([])
 
 
-    print "preprocess done!"
+    print ("preprocess done!")
 
     return train_data, train_label, validation_data, validation_label, test_data, test_label
 
