@@ -35,7 +35,7 @@ def preprocess():
     n_valid = 5000
     #end piazza tip
     
-     """ Input:
+    """ Input:
      Although this function doesn't have any input, you are required to load
      the MNIST data set from file 'mnist_all.mat'.
 
@@ -62,7 +62,7 @@ def preprocess():
      - divide the original data set to training, validation and testing set"""
     
     mat = loadmat('mnist_all.mat') #loads the MAT object as a Dictionary
-     train_data = np.concatenate((mat['train0'], mat['train1'],
+    train_data = np.concatenate((mat['train0'], mat['train1'],
                                  mat['train2'], mat['train3'],
                                  mat['train4'], mat['train5'],
                                  mat['train6'], mat['train7'],
