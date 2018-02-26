@@ -98,6 +98,14 @@ def preprocess():
 
     # Split train_data and train_label into train_data, validation_data and train_label, validation_label
     # replace the next two lines
+    train_data = train_data * 1.0
+    #print(type(train_data[2][5]))
+    #somehow converting to double/float
+    
+    train_data = train_data/255
+    #print(train_data[2])
+    #normalize everything
+    
     validation_data = np.array([])
     validation_label = np.array([])
 
