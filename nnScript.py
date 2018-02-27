@@ -98,17 +98,32 @@ def preprocess():
 
     # Split train_data and train_label into train_data, validation_data and train_label, validation_label
     # replace the next two lines
-    train_data = train_data * 1.0
-    #print(type(train_data[2][5]))
-    #somehow converting to double/float
     
-    train_data = train_data/255
-    #print(train_data[2])
-    #normalize everything
+    #Remove features
+    temp= train_data[:, ~np.all(train_data == train_data[0,:], axis=0)]
+    #Normalize
+    temp = temp/255.0
+    #Create Random Row indecs this is to split data randomly
+    ind= np.random.permutation(temp.shape[0])
+    #Shuffle based on ind
+    temp = np.take(temp,ind,axis = 0)
+    #Shuffle labels to match this
+    #temp_labels = np.take(train)
+   
+    # Split train_data and train_label into train_data, validation_data and train_label, validation_label
     
-    validation_data = np.array([])
-    validation_label = np.array([])
-
+    #Giving 15% to validation_data
+    #85% to training data
+    # Percentage is of train_data
+    validation_data = temp[:int(temp.shape[0]*.15),:]
+    train_data = temp[int(temp.shape[0]*.15):,:]
+    
+    temp_labels = np.take(train_label,ind,axis =0)
+    #Splitting the labels
+    validation_label = temp_labels[:int(temp_labels.shape[0]*.15),:]
+    train_label = temp_labels[int(temp_labels.shape[0]*.15):,:]
+    
+    
 
     print("preprocess done!")
 
