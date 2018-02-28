@@ -2,7 +2,9 @@ import numpy as np
 from scipy.optimize import minimize
 from scipy.io import loadmat
 from math import sqrt
+from functools import reduce
 
+eta = 0.05
 
 def initializeWeights(n_in, n_out):
     """
@@ -130,6 +132,43 @@ def preprocess():
     return train_data, train_label, validation_data, validation_label, test_data, test_label
 
 
+def obj_helper(*inputs, *args,y):
+    w1,w2,obj_val,j = inputs
+    n_input, n_hidden, n_class, training_data, training_label, lambdaval = args
+    
+    
+    labels = np.array([])
+    # Your code here
+    bias_td = np.append(j, [1])
+    h = np.array([])
+    for i in w1:
+        a = np.matmul(np.transpose(i), bias_td)
+        z = sigmoid(a)
+        h = np.append(h, z)
+        
+    h = np.append(h, 1)
+    
+    for i in w2:
+        a = np.matmul(np.transpose(i), h)
+        z = sigmoid(a)
+        labels = np.append(labels, z)
+    
+    outputs=labels
+    error_output = 0
+    for l in outputs:
+        error_output += y * np.log(l) + (1 - y) * np.log(1 - l)
+        
+    error_output *= -1
+    obj_val+=error_output
+    for w in w2:
+        w -= eta*error_output
+        
+    for w in w1:
+        w -= eta*error_output
+    return w1,w2,obj_val,j+1
+    
+
+
 def nnObjFunction(params, *args):
     """% nnObjFunction computes the value of objective function (negative log 
     %   likelihood error function with regularization) given the parameters 
@@ -180,9 +219,20 @@ def nnObjFunction(params, *args):
     #
     #
     #
-
-
-
+    """error_output = 0
+    for l in outputs:
+        error_output += y * np.log(l) + (1 - y) * np.log(1 - l)
+        
+    error_output *= -1
+    obj_val+=error_output
+    for w in w2:
+        w -= eta*error_output
+        
+    for w in w1:
+        w -= eta*error_output
+        """
+    w1, w2, obj_val, index = reduce(lambda label, label2: obj_helper(obj_helper((w1,w2,0,0),*args,label),*args,label2), training_label)
+    
     # Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
     # you would use code similar to the one below to create a flat array
     # obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()),0)
@@ -190,6 +240,7 @@ def nnObjFunction(params, *args):
     
 
     return (obj_val, obj_grad)
+
 
 
 def nnPredict(w1, w2, data):
@@ -209,10 +260,9 @@ def nnPredict(w1, w2, data):
     % Output: 
     % label: a column vector of predicted labels"""
 
-    labels = np.array([])
-    # Your code here
+    
 
-    return labels
+    return None
 
 
 """**************Neural Network Script Starts here********************************"""
@@ -257,22 +307,43 @@ nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args, method=
 w1 = nn_params.x[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
 w2 = nn_params.x[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
 
+
+
+
+n_input = 5
+n_hidden = 3
+n_class = 2
+training_data = np.array([np.linspace(0,1,num=5),np.linspace(1,0,num=5)])
+training_label = np.array([0,1])
+lambdaval = 0
+params = np.linspace(-5,5, num=26)
+args = (n_input, n_hidden, n_class, training_data, training_label, lambdaval)
+objval,objgrad = nnObjFunction(params, *args)
+print("Objective value:")
+print(objval)
+print("Gradient values: ")
+print(objgrad)
+
+
+
+
 # Test the computed parameters
 
-predicted_label = nnPredict(w1, w2, train_data)
+#print(train_data.shape)
+#predicted_label = nnPredict(w1, w2, train_data)
 
 # find the accuracy on Training Dataset
 
-print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
+#print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
 
-predicted_label = nnPredict(w1, w2, validation_data)
-
-# find the accuracy on Validation Dataset
-
-print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == validation_label).astype(float))) + '%')
-
-predicted_label = nnPredict(w1, w2, test_data)
+#predicted_label = nnPredict(w1, w2, validation_data)
 
 # find the accuracy on Validation Dataset
 
-print('\n Test set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
+#print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == validation_label).astype(float))) + '%')
+
+# predicted_label = nnPredict(w1, w2, test_data)
+
+# find the accuracy on Validation Dataset
+
+#print('\n Test set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
