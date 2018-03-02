@@ -1,7 +1,8 @@
+#Put this at END of nnScript.py
 print("Outputting params to params.pickle...")
 #OUTPUTTING VALUES TO params.pickle
 #First import pickle at top
-Ccreate a global copy of train_data called selected_features
+#Create a global copy of train_data called selected_features
 #Need to dump following variables to params.pickle for handwritten digits only
   #selected_features    features remaining after feature selection
   #n_hidden     optimal number of hidden nodes
