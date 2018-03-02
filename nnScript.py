@@ -132,7 +132,7 @@ def preprocess():
     return train_data, train_label, validation_data, validation_label, test_data, test_label
 
 
-def obj_helper(*inputs, *args,y):
+'''def obj_helper(*inputs, *args,y):
     w1,w2,obj_val,j = inputs
     n_input, n_hidden, n_class, training_data, training_label, lambdaval = args
     
@@ -166,7 +166,7 @@ def obj_helper(*inputs, *args,y):
     for w in w1:
         w -= eta*error_output
     return w1,w2,obj_val,j+1
-    
+'''    
 
 
 def nnObjFunction(params, *args):
@@ -212,25 +212,104 @@ def nnObjFunction(params, *args):
     w1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     w2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
-
+    
+    
+    
+    
+    
+    #use this line for objective func
+    output_matrix = np.array([])
+    h_matrix = np.array([])
+    isFirst= True
+    for j in range(0,n_input):
+        output_per_input = np.array([])
+        
+        
+        bias_td = np.append(training_data[j], [1])
+        h = np.array([])
+        for i in w1:
+            a = np.matmul(np.transpose(i), bias_td)
+            z = sigmoid(a)
+            h = np.append(h, z)
+            
+        h = np.append(h, 1)
+        
+        for i in w2:
+            a = np.matmul(np.transpose(i), h)
+            z = sigmoid(a)
+            output_per_input = np.append(output_per_input, z)
+            
+        h_matrix = np.append(h_matrix,h,axis =0)
+        if(isFirst):
+            output_matrix = output_per_input
+            isFirst = False;
+        else:
+            output_matrix = np.vstack((output_matrix,output_per_input))
+       
+    
+    obj_val = 0
+    for i in range(0,n_input):
+        inner_sum =0;
+        y = training_label[i]
+        for l in range(0,n_class):
+            inner_sum += y * np.log(output_matrix[i][l]) + (1 - y) * np.log(1 - output_matrix[i][l])
+                
+        obj_val += inner_sum
+    obj_val = obj_val*(-1/n_input)
+    print("Obj Value: "+str(obj_val))
+    #obj with regularization
+    sum_hidden =0;
+    sum_out = 0;
+    for i in range(0,n_hidden):
+        
+        sum_hidden = np.sum(np.square(w1[i]))
+    for j in range(0,n_class):
+        sum_out = np.sum(np.square(w2[j]))
+    obj_val_with_reg = (obj_val + lambdaval/(2*n_input))*(sum_hidden+sum_out)
+    print("Obj Value With Regularization : "+ str(obj_val_with_reg ))
+    
+    #gradient_h2o_matrix = np.array([])
+    error = 0
+    isFirst = True
+    gradient_h2o_perInput = np.array([])
+    for i in range(0,n_hidden):
+        for j in range(0,n_class):
+            if (isFirst):
+                print(output_matrix.shape)
+                print("---------")
+                print(training_label.shape)
+                print("-----------")
+                print(h_matrix.shape)
+                gradient_h2o_perInput = (output_matrix[i][j]-training_label[i])*h_matrix[i]
+                isFirst = False
+            else:
+                gradient_h2o_perInput= np.vstack((gradient_h2o_perInput,(output_matrix[i][j]-training_label[i])*h_matrix[i]))
+        error+=np.matmul(h_matrix[i],np.matmul(1-h_matrix[i],np.matmul(np.sum(np.matmul(gradient_h2o_perInput,w2[i])),training_data[i])))
+    print("Gradient Error : " + str(error)) 
+    for w in w2:
+        w -= eta*error_output
+        
+    for w in w1:
+        w -= eta*error_output
+        
+        
+        
+        
     # Your code here
     #
     #
     #
     #
     #
-    """error_output = 0
-    for l in outputs:
-        error_output += y * np.log(l) + (1 - y) * np.log(1 - l)
+    
         
-    error_output *= -1
-    obj_val+=error_output
+    
     for w in w2:
         w -= eta*error_output
         
     for w in w1:
         w -= eta*error_output
-        """
+        
     w1, w2, obj_val, index = reduce(lambda label, label2: obj_helper(obj_helper((w1,w2,0,0),*args,label),*args,label2), training_label)
     
     # Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
@@ -259,10 +338,40 @@ def nnPredict(w1, w2, data):
        
     % Output: 
     % label: a column vector of predicted labels"""
+    labels = np.array([])
+    
+    #use this line for objective func
+    outputs_matrix = np.array([])
+    bias_td = np.append(j, [1])
+    h = np.array([])
+    for i in w1:
+        a = np.matmul(np.transpose(i), bias_td)
+        z = sigmoid(a)
+        h = np.append(h, z)
+        
+    h = np.append(h, 1)
+    
+    for i in w2:
+        a = np.matmul(np.transpose(i), h)
+        z = sigmoid(a)
+        labels = np.append(labels, z)
+    
+    outputs=labels
+    error_output = 0
+    for l in outputs:
+        error_output += y * np.log(l) + (1 - y) * np.log(1 - l)
+        
+    error_output *= -1
+    obj_val+=error_output
+    for w in w2:
+        w -= eta*error_output
+        
+    for w in w1:
+        w -= eta*error_output
 
     
 
-    return None
+    return labels
 
 
 """**************Neural Network Script Starts here********************************"""
@@ -288,7 +397,7 @@ initial_w2 = initializeWeights(n_hidden, n_class)
 initialWeights = np.concatenate((initial_w1.flatten(), initial_w2.flatten()), 0)
 
 # set the regularization hyper-parameter
-lambdaval = 0
+lambdaval = 0.01
 
 args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
 
@@ -323,6 +432,12 @@ print("Objective value:")
 print(objval)
 print("Gradient values: ")
 print(objgrad)
+
+
+#Run nnpredict once
+#Run nnobject pass new weights to nnPredict do this at the bottom of nnobject
+
+
 
 
 
