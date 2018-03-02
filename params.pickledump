@@ -1,5 +1,9 @@
+#after feature removal, place this line
+selected_features = train_data
+
 #Put this at END of nnScript.py
 print("Outputting params to params.pickle...")
+global selected_features = None
 #OUTPUTTING VALUES TO params.pickle
 #First import pickle at top
 #Create a global copy of train_data called selected_features
