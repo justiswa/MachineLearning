@@ -9,7 +9,7 @@ import numpy as np
 from scipy.io import loadmat
 from math import sqrt
 from functools import reduce
-opt_count = 0
+
 
 
 def initializeWeights(n_in, n_out):
@@ -39,9 +39,7 @@ def sigmoid(z):
 
 # Paste your nnObjFunction here
 def nnObjFunction(params, *args):
-    global opt_count
-    opt_count+=1;
-    print(opt_count)
+    
     """% nnObjFunction computes the value of objective function (negative log 
     %   likelihood error function with regularization) given the parameters 
     %   of Neural Networks, thetraining data, their corresponding training 
@@ -132,14 +130,17 @@ def nnObjFunction(params, *args):
     JW1W2 = 0
     JW1 = np.ndarray([])
     JW2 = np.ndarray([])
-    #lim = len(training_data[:,0]);
-    lim = 1;
+    lim = len(training_data[:,0]);
+    #lim = 1;
     for i in range(0, lim):
         ai = np.array([])
         zi = np.array([])
         bias_td = np.append(training_data[i], [1])
         # formula 1
         #w1[:,-1:] = [[1],[1],[1]]
+       
+        
+      
         ai = np.append(np.matmul(w1, np.transpose(bias_td)), ai)
         # formula 2
         zi = np.append(sigmoid(ai), zi)
@@ -158,7 +159,8 @@ def nnObjFunction(params, *args):
         oi = np.array([])
         ai = np.append(ai, [1])
         # formula 3
-        w2[:,-1:] = [[1],[1]]
+        #w2[:,-1:] = [[1],[1]]
+        
         bi = np.append(np.matmul(w2, np.transpose(ai)), bi)
         # formula 4
         oi = np.append(sigmoid(bi), oi)
@@ -206,7 +208,7 @@ def nnObjFunction(params, *args):
         #dJiW1 = np.matmul(np.matmul(np.matmul(np.subtract(zi, 1), zi), np.matmul(np.subtract(oi, training_label), w2[i])), training_data[i])
 
     #w1 = np.subtract(w1, eta * JW1)
-    w2 = np.subtract(w2, eta * JW2)
+    #w2 = np.subtract(w2, eta * JW2)
 
     JW1W2 /= len(training_data[:,0])
     #print("a: " + np.array2string(a))
@@ -214,6 +216,7 @@ def nnObjFunction(params, *args):
     #print("b: " + np.array2string(b))
     #print("o: " + np.array2string(o))
     obj_val = JW1W2 + (lambdaval / (2 * len(training_data[:, 0]))) * (np.sum(np.square(w1)) + np.sum(np.square(w2)))
+    
     # I think this is average error or gradiance, those are the same i think
     # whatever formula 5 is
     """sum_of_something = 0
@@ -325,13 +328,10 @@ params = np.linspace(-5,5, num=26)
 args = (n_input, n_hidden, n_class, training_data, training_label, lambdaval)
 
 
-initial_w1 = initializeWeights(n_input, n_hidden)
-initial_w2 = initializeWeights(n_hidden, n_class)
-initialWeights = np.concatenate((initial_w1.flatten(), initial_w2.flatten()), 0)
 
-opts = {'maxiter': 2}
 
-minimize(nnObjFunction, initialWeights, jac=True, args=args, method='CG', options=opts)
+
+#minimize(nnObjFunction, initialWeights, jac=True, args=args, method='CG', options=opts)
 objval,objgrad = nnObjFunction(params, *args)
 
 print("Objective value:")

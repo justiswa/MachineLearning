@@ -103,8 +103,10 @@ def preprocess():
     
     #Remove features
     temp= train_data[:, ~np.all(train_data == train_data[0,:], axis=0)]
+    test_data = test_data[:, ~np.all(test_data== test_data[0,:], axis=0)]
     #Normalize
     temp = temp/255.0
+    test_data = test_data/255.0
     #Create Random Row indecs this is to split data randomly
     ind= np.random.permutation(temp.shape[0])
     #Shuffle based on ind
