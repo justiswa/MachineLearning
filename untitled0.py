@@ -4,9 +4,29 @@ Created on Sun Mar  4 08:58:27 2018
 
 @author: Matty Boy
 """
-
+from scipy.optimize import minimize
 import numpy as np
+from scipy.io import loadmat
+from math import sqrt
+from functools import reduce
+opt_count = 0
 
+
+def initializeWeights(n_in, n_out):
+    """
+    # initializeWeights return the random weights for Neural Network given the
+    # number of node in the input layer and output layer
+
+    # Input:
+    # n_in: number of nodes of the input layer
+    # n_out: number of nodes of the output layer
+       
+    # Output: 
+    # W: matrix of random initial weights with size (n_out x (n_in + 1))"""
+
+    epsilon = sqrt(6) / sqrt(n_in + n_out + 1)
+    W = (np.random.rand(n_out, n_in + 1) * 2 * epsilon) - epsilon
+    return W
 # Paste your sigmoid function here
 
 def sigmoid(z):
@@ -19,6 +39,9 @@ def sigmoid(z):
 
 # Paste your nnObjFunction here
 def nnObjFunction(params, *args):
+    global opt_count
+    opt_count+=1;
+    print(opt_count)
     """% nnObjFunction computes the value of objective function (negative log 
     %   likelihood error function with regularization) given the parameters 
     %   of Neural Networks, thetraining data, their corresponding training 
@@ -109,12 +132,14 @@ def nnObjFunction(params, *args):
     JW1W2 = 0
     JW1 = np.ndarray([])
     JW2 = np.ndarray([])
-    for i in range(0, len(training_data[:,0])):
+    #lim = len(training_data[:,0]);
+    lim = 1;
+    for i in range(0, lim):
         ai = np.array([])
         zi = np.array([])
         bias_td = np.append(training_data[i], [1])
         # formula 1
-        w1[:,-1:] = [[1],[1],[1]]
+        #w1[:,-1:] = [[1],[1],[1]]
         ai = np.append(np.matmul(w1, np.transpose(bias_td)), ai)
         # formula 2
         zi = np.append(sigmoid(ai), zi)
@@ -180,7 +205,7 @@ def nnObjFunction(params, *args):
         
         #dJiW1 = np.matmul(np.matmul(np.matmul(np.subtract(zi, 1), zi), np.matmul(np.subtract(oi, training_label), w2[i])), training_data[i])
 
-    w1 = np.subtract(w1, eta * JW1)
+    #w1 = np.subtract(w1, eta * JW1)
     w2 = np.subtract(w2, eta * JW2)
 
     JW1W2 /= len(training_data[:,0])
@@ -285,7 +310,7 @@ def nnObjFunction(params, *args):
     # Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
     # you would use code similar to the one below to create a flat array
     # obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()),0)
-    obj_grad = np.concatenate((w1.flatten(), w2.flatten()),0)
+    obj_grad = np.concatenate((JW1.flatten(), JW2.flatten()),0)
     
 
     return (obj_val, obj_grad)
@@ -298,7 +323,17 @@ training_label = np.array([0,1])
 lambdaval = 0
 params = np.linspace(-5,5, num=26)
 args = (n_input, n_hidden, n_class, training_data, training_label, lambdaval)
+
+
+initial_w1 = initializeWeights(n_input, n_hidden)
+initial_w2 = initializeWeights(n_hidden, n_class)
+initialWeights = np.concatenate((initial_w1.flatten(), initial_w2.flatten()), 0)
+
+opts = {'maxiter': 2}
+
+minimize(nnObjFunction, initialWeights, jac=True, args=args, method='CG', options=opts)
 objval,objgrad = nnObjFunction(params, *args)
+
 print("Objective value:")
 print(objval)
 print("Gradient values: ")

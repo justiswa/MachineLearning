@@ -555,9 +555,6 @@ print("Gradient values: ")
 print(objgrad)
 
 
-#Run nnpredict once
-#Run nnobject pass new weights to nnPredict do this at the bottom of nnobject
-
 
 
 
