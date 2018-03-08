@@ -128,10 +128,11 @@ def nnObjFunction(params, *args):
     b = np.array([])
     o = np.array([])
     JW1W2 = 0
-    JW1 = np.ndarray([])
-    JW2 = np.ndarray([])
-    lim = len(training_data[:,0]);
+    JW1 = np.array([])
+    JW2 = np.array([])
+    #lim = 
     #lim = 1;
+    lim =  len(training_data[:,0]);
     for i in range(0, lim):
         ai = np.array([])
         zi = np.array([])
@@ -184,7 +185,7 @@ def nnObjFunction(params, *args):
         t_dJiW2 = w2
         t_dJiW2[:,:-1] = dJiW2
         try:
-            JW2 = JW2.sum(t_dJiW2, JW2)
+            JW2 = np.add(t_dJiW2, JW2)
         except:
             JW2 = t_dJiW2
         
@@ -194,7 +195,7 @@ def nnObjFunction(params, *args):
         t_dJiW1 = w1
         t_dJiW1[:,:-1] = dJiW1
         try:
-            JW1 = JW1.sum(t_dJiW1, JW1)
+            JW1 = np.add(t_dJiW1, JW1)
         except:
             JW1 = t_dJiW1
         
@@ -219,100 +220,8 @@ def nnObjFunction(params, *args):
     
     # I think this is average error or gradiance, those are the same i think
     # whatever formula 5 is
-    """sum_of_something = 0
-    for i in range(0, len(training_data[:,0])):
-        for l in range(0, n_class):
-            sum_of_something += (training_label[i] * np.log(o[l]) + (1 - training_label[i]) * np.log(1 - o[l]))
-    sum_of_something /= -1 * n_input
-    sum_of_something = np.sum(sum_of_something)
-    
-    # formula 8/9
-    dJ = np.array([])
-    for i in range(0, len(training_data[:, 0])):
-        temp = np.matmul(np.transpose(z),np.subtract(o, training_label))
-        try:
-            dJ = np.vstack((dJ, temp))
-        except:
-            dJ = temp
-        
-    obj_val = sum_of_something + (lambdaval/(2*len(training_data[:,0]))) * np.sum(np.sum(np.square(w1)) + np.sum(np.square(w2)))
-    """
-    
-    """for i in range(0,n_input):
-        inner_sum =0;
-        y = training_label[i]
-        for l in range(0,n_class):
-            inner_sum += y * np.log(output_matrix[i][l]) + (1 - y) * np.log(1 - output_matrix[i][l])
-                
-        obj_val += inner_sum
-    obj_val = obj_val*(-1/n_input)
-    print("Obj Value: "+str(obj_val))
-    #obj with regularization
-    sum_hidden =0;
-    sum_out = 0;
-    for i in range(0,n_hidden):
-        
-        sum_hidden = np.sum(np.square(w1[i]))
-    for j in range(0,n_class):
-        sum_out = np.sum(np.square(w2[j]))
-    obj_val_with_reg = (obj_val + lambdaval/(2*n_input))*(sum_hidden+sum_out)
-    print("Obj Value With Regularization : "+ str(obj_val_with_reg ))
-    print(output_matrix.shape)
-    sum_ch = 0
-    for l in range(0, n_class):
-        sum_ch += np.sum(np.subtract(output_matrix[l,:], training_label[:])) + (np.multiply(w2[l], lambdaval))
-        
-    sum_ch /= n_input
-    
-    #gradient_h2o_matrix = np.array([])
-    error = 0
-    isFirst = True
-    gradient_h2o_perInput = np.array([])
-    for i in range(0,n_hidden):
-        for j in range(0,n_class):
-            if (isFirst):
-                print(output_matrix.shape)
-                print("---------")
-                print(training_label.shape)
-                print("-----------")
-                print(h_matrix.shape)
-                gradient_h2o_perInput = (output_matrix[i][j]-training_label[i])*h_matrix[i]
-                isFirst = False
-            else:
-                gradient_h2o_perInput= np.vstack((gradient_h2o_perInput,(output_matrix[i][j]-training_label[i])*h_matrix[i]))
-        error+=np.matmul(h_matrix[i],np.matmul(1-h_matrix[i],np.matmul(np.sum(np.matmul(gradient_h2o_perInput,w2[i])),training_data[i])))
-    print("Gradient Error : " + str(error)) """
-    
-    
-    """ for w in w2:
-        w -= eta*error_output
-        
-    for w in w1:
-        w -= eta*error_output
-        
-        
-        
-        
-    # Your code here
-    #
-    #
-    #
-    #
-    #
-    
-        
-    
-    for w in w2:
-        w -= eta*error_output
-        
-    for w in w1:
-        w -= eta*error_output
-    """
-    # w1, w2, obj_val, index = reduce(lambda label, label2: obj_helper(obj_helper((w1,w2,0,0),*args,label),*args,label2), training_label)
-    
-    # Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
-    # you would use code similar to the one below to create a flat array
-    # obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()),0)
+    JW1 /= lim
+    JW2 /= lim
     obj_grad = np.concatenate((JW1.flatten(), JW2.flatten()),0)
     
 
