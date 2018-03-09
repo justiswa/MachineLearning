@@ -90,7 +90,13 @@ def nnObjFunction(params, *args):
     JW1W2 = 0
     JW1 = np.array([])
     JW2 = np.array([])
+<<<<<<< HEAD
     lim = len(training_data[:,0]);
+=======
+    #lim = 
+    #lim = 1;
+    lim =  len(training_data[:,0]);
+>>>>>>> e429790b3537cc8b2818653b677aa8f4f93217a1
     for i in range(0, lim):
         ai = np.array([])
         zi = np.array([])
@@ -153,6 +159,7 @@ def nnObjFunction(params, *args):
         except:
             JW1 = t_dJiW1
         
+<<<<<<< HEAD
     JW1 /= lim
     JW2 /= lim
     JW1W2 /= lim
@@ -161,6 +168,31 @@ def nnObjFunction(params, *args):
     # Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
     # you would use code similar to the one below to create a flat array
     # obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()),0)
+=======
+        #print("old w2: " + np.array2string(w2))
+        #w2 = np.subtract(w2, eta * (t_dJiW2 + (lambdaval * w2)))
+        #print("new w2: " + np.array2string(w2))
+        #print("old w1: " + np.array2string(w1))
+        #w1 = np.subtract(w1, eta * (t_dJiW1 + (lambdaval * w1)))
+        #print("new w1: " + np.array2string(w1))
+        
+        #dJiW1 = np.matmul(np.matmul(np.matmul(np.subtract(zi, 1), zi), np.matmul(np.subtract(oi, training_label), w2[i])), training_data[i])
+
+    #w1 = np.subtract(w1, eta * JW1)
+    #w2 = np.subtract(w2, eta * JW2)
+
+    JW1W2 /= len(training_data[:,0])
+    #print("a: " + np.array2string(a))
+    #print("z: " + np.array2string(z))
+    #print("b: " + np.array2string(b))
+    #print("o: " + np.array2string(o))
+    obj_val = JW1W2 + (lambdaval / (2 * len(training_data[:, 0]))) * (np.sum(np.square(w1)) + np.sum(np.square(w2)))
+    
+    # I think this is average error or gradiance, those are the same i think
+    # whatever formula 5 is
+    JW1 /= lim
+    JW2 /= lim
+>>>>>>> e429790b3537cc8b2818653b677aa8f4f93217a1
     obj_grad = np.concatenate((JW1.flatten(), JW2.flatten()),0)
     
 
